@@ -16,7 +16,8 @@ import boost.program_options as po
 ```
 
 ## Macro Function
-### Is Macro Function Faster than Normal Function ?
+Macros are **pre-processed** which means that all the macros would be processed before your program compiles. However, functions are not **preprocessed but compiled**. In short, you can regard macro as a naive replacement, which makes macro 'faster' than functions in some cases.
+
 
 ## Makefile
 
