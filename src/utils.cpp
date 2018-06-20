@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+namespace Codeep {
+namespace Utils {
+
 void rootCheck() {
     if (geteuid() != 0) {
         std::cout << "Must run as root" << std::endl;
@@ -47,3 +50,5 @@ char *getKeyboardDeviceFileName() {
     return strdup(strcat(result, temp));
 }
 
+}
+}

@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <iostream>
 
+namespace Codeep {
+namespace Utils {
 /*
  * Some applications must run in root
  */
@@ -17,5 +19,8 @@ void rootCheck();
 int openKeyboardDeviceFile(const char*);
 
 char *getKeyboardDeviceFileName();
+
+}
+}
 
 #endif
