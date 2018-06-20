@@ -1,4 +1,5 @@
 #include "core.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <boost/program_options.hpp>
@@ -15,6 +16,7 @@ int help(int argc, char** argv) {
 
 int init(int argc, char **argv) {
     // 'Bonjour' means 'hello' in France.
+    rootCheck();
     cout << "Bonjour, Codeep!!" << endl;
     Codeep::Core::Init();
     return 0;
@@ -22,6 +24,7 @@ int init(int argc, char **argv) {
 
 int exit(int argc, char **argv) {
     // 'Au revoir' means 'goodbye' in France.
+    rootCheck();
     cout << "Au revoir, Codeep!!" << endl;
     Codeep::Core::Exit();
     return 0;
