@@ -7,6 +7,7 @@ I try to learn some basic knowledge about how to build a c/c++ project while bui
 ## *boost::program_options*
 This is a argument parser library in *boost*. See tutorial [here](https://www.boost.org/doc/libs/1_63_0/doc/html/program_options/tutorial.html). 
 ### About *namespace*
+namespace mainly aims to deal with name collision.
 ```C++
 namespace po = boost::program_options
 ```
