@@ -9,11 +9,12 @@
 namespace Codeep {
 namespace Core {
 
-//typedef struct input_event input_event;
 /*
  * Initialize a daemon process to record frequency of keystrokes
  */
 void Init();
+
+void KeystrokesRecord();
 
 /* 
  * Kill the daemon process

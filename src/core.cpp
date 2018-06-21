@@ -4,8 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <time.h>
 #include <stdio.h>
 #include <errno.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -16,16 +18,43 @@ namespace Core {
 
 typedef struct input_event input_event;
 char* LOGFILE = "./codeep.log";
+const int timestamp = 10;
+
+void KeystrokesRecord() {
+    char* kbd_file = Codeep::Utils::getKeyboardDeviceFileName();
+    int kbd_fd = Codeep::Utils::openKeyboardDeviceFile(kbd_file);
+    assert(kbd_fd > 0);
+    input_event event; 
+
+    std::ofstream logfile;
+    logfile.open(LOGFILE, std::ios::out | std::ios::app);
+
+    int cnt = 0;
+    time_t timer = time(NULL);
+    time_t start_point = timer;
+    int time_counter = 0;
+    sleep(1);   // For initialziation.
+    while (true) {
+        time_t _timer = time(NULL);
+        if ((_timer-timer) > 10) {
+            logfile << (_timer-start_point) << "\t" << cnt << std::endl;
+            cnt = 0;
+            timer = _timer;
+        }
+
+        if (read(kbd_fd, &event, sizeof(input_event)) > 0){
+            if (event.type == EV_KEY) {
+                cnt++;
+            }
+        }
+    }
+    close(kbd_fd);
+    logfile.close();
+}
 
 void Init() {
     std::cout << "Codeep has been successfully launched !!! \n"
               << "Enjoy coding !!!" << std::endl;
-
-    char* kbd_file = Codeep::Utils::getKeyboardDeviceFileName();
-    std::cout << "Keyboard File: " << kbd_file << std::endl;
-    int kbd_fd = Codeep::Utils::openKeyboardDeviceFile(kbd_file);
-    assert(kbd_fd > 0);
-    std::cout << geteuid() << std::endl;
 
     if (daemon(1, 0) == -1) {
         std::cout << "Something wrong ... :(" << std::endl;
@@ -40,22 +69,7 @@ void Init() {
     tmpfile << daemon_pid;
     tmpfile.close();
     
-    input_event event; 
-    FILE *logfile = fopen(LOGFILE, "a");
-    setbuf(logfile, NULL);
-    int cnt = 0;
-    while (read(kbd_fd, &event, sizeof(input_event)) > 0) {
-        if (event.type == EV_KEY) {
-            cnt++;
-            std::string _cnt = std::to_string(cnt);
-            char* _c_cnt = new char[_cnt.length()+1];
-            strcpy(_c_cnt, _cnt.c_str());
-            fputs(_c_cnt, logfile);
-            delete [] _c_cnt;
-        }
-    }
-    close(kbd_fd);
-    fclose(logfile);
+    KeystrokesRecord();
 }
 
 void Exit() {
@@ -72,6 +86,9 @@ void Exit() {
     }
 
     std::cout << "Coding finished !!!" << std::endl;
+
+    // std::string show_graph = "python draw_keystrokes.py";
+    // system(show_graph.c_str());
 }
 
 }
