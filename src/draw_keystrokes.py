@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 
 
-freq_log = "codeep.log"
+freq_log = "_codeep.log"
 time_interval = 10
 
 def get_log_data():
@@ -36,22 +36,32 @@ def normalize(time, ks):
 
 def smoothing(time, ks):
     """
-    Smoothing the curve
+    Smoothing the curve.
+    Basic idea is to insert more points.
     """
-    x_smooth = np.linspace(time.min(), time.max(), len(time)*5)
+    x_smooth = np.linspace(time.min(), time.max(), len(time)*128)
     y_smooth = spline(time, ks, x_smooth)
     return x_smooth, y_smooth
 
 def draw():
     """
     Draw the keystrokes frequency graph.
+    To draw a gradient color line, the most simple method is to scatter
+    the splined points according to build-in colormap!
     """
     t_, k_ = get_log_data()
     timestamp, keystrokes = normalize(t_, k_)
     t_smooth, k_smooth = smoothing(timestamp, keystrokes)
+    print (len(t_smooth))
 
     fig, ax = plt.subplots(figsize=(10, 4))
-    plt.plot(t_smooth, k_smooth, 'r-')
+    s = np.ones(len(t_smooth))*1.25
+
+    # Map the keystrokes to colormap.
+    c = k_smooth
+    plt.scatter(t_smooth, k_smooth, s=s, c=c, 
+        cmap=plt.get_cmap('summer_r'), marker='.')
+
     ax.set_ylim(0, k_smooth.max()+10)
     plt.show()
 
